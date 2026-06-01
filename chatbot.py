@@ -11,10 +11,14 @@ from test import (
     normalize_trip_params,
     planning_agent,
 )
+from src.tools.travel_api_tools import validate_travel_input
 
 
 HISTORY_PATH = "history.json"
 MAX_HISTORY_MESSAGES = 8
+
+# Simple state for collecting trip information across conversation
+_current_trip_request = {}
 
 
 def load_history() -> list:
@@ -89,16 +93,51 @@ Quy tắc:
     return rewritten or user_input
 
 
-def run_planner_turn(llm, standalone_request: str) -> tuple:
+def run_planner_turn(llm, standalone_request: str, current_trip: dict = None) -> tuple:
+    """Run a single turn of the travel planner with input validation."""
+
+    # Merge with existing trip info
+    trip = dict(current_trip) if current_trip else {}
+
+    # Validate the request
+    validation_result = validate_travel_input(standalone_request)
+
+    # Update trip with validated info
+    normalized = validation_result.get("normalized_input", {})
+    if normalized.get("origin"):
+        trip["origin"] = normalized["origin"]
+    if normalized.get("destination"):
+        trip["destination"] = normalized["destination"]
+    if normalized.get("budget"):
+        trip["budget"] = normalized["budget"]
+    if normalized.get("people"):
+        trip["people"] = normalized["people"]
+    if normalized.get("days"):
+        trip["days"] = normalized["days"]
+
+    # If validation fails, ask follow-up
+    if not validation_result["is_valid"]:
+        follow_up = validation_result.get("follow_up_question", "Bạn cần cung cấp thêm thông tin.")
+        assumptions = validation_result.get("assumptions", [])
+        answer = follow_up
+        if assumptions:
+            answer += "\n\n" + "Giả định: " + "; ".join(assumptions)
+        return answer, trip, validation_result
+
+    # Extract params for planning
     params = normalize_trip_params(intent_agent(llm, standalone_request))
+
+    # Merge with validated info
+    if trip.get("origin") and not params.get("origin"):
+        params["origin"] = trip["origin"]
+    if trip.get("budget") and not params.get("budget_vnd"):
+        params["budget_vnd"] = trip["budget"]
+    if trip.get("people") and not params.get("adults"):
+        params["adults"] = trip["people"]
+
     if params.get("origin_missing"):
         answer = "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn"
-        metadata = {
-            "standalone_request": standalone_request,
-            "params": params,
-            "needs_origin": True,
-        }
-        return answer, metadata
+        return answer, trip, validation_result
 
     destination_options = destination_agent(llm, standalone_request, params)
     if not destination_options:
@@ -117,12 +156,11 @@ def run_planner_turn(llm, standalone_request: str) -> tuple:
         destination_options,
         destination_research,
     )
-    metadata = {
-        "standalone_request": standalone_request,
-        "params": params,
-        "destination_options": destination_options,
-    }
-    return answer, metadata
+
+    # Clear trip after successful planning
+    cleared_trip = {}
+
+    return answer, cleared_trip, validation_result
 
 
 def print_intro(history: list) -> None:
@@ -136,6 +174,9 @@ def main() -> int:
     load_environment()
     history = load_history()
     print_intro(history)
+
+    # Simple state for multi-turn conversation
+    current_trip = {}
 
     try:
         llm = create_llm_provider()
@@ -160,14 +201,20 @@ def main() -> int:
                 user_input,
             )
             print("Đang xử lý yêu cầu:", standalone_request)
-            answer, metadata = run_planner_turn(llm, standalone_request)
+            answer, current_trip, validation_result = run_planner_turn(
+                llm, standalone_request, current_trip
+            )
         except Exception as error:
             answer = f"Mình chưa xử lý được lượt này: {error}"
-            metadata = None
+            current_trip = {}
+            validation_result = None
 
         print("\nBot:")
         print(answer)
-        append_history(history, "assistant", answer, metadata=metadata)
+        append_history(history, "assistant", answer, metadata={
+            "validation": validation_result,
+            "current_trip": current_trip,
+        })
 
 
 if __name__ == "__main__":
