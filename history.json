@@ -82,5 +82,46 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2026-06-01T17:38:47",
+    "role": "user",
+    "content": "﻿T??i mu???n ??i bi???n"
+  },
+  {
+    "timestamp": "2026-06-01T17:39:24",
+    "role": "assistant",
+    "content": "Bạn cần cung cấp thêm thông tin: ngân sách của bạn là bao nhiêu? (VD: 5 triệu), bạn muốn đi trong bao nhiêu ngày? (VD: 3 ngày)\n\nGiả định: User did not provide origin point, using default.; User did not provide number of people, assumed 1 person.",
+    "metadata": {
+      "validation": {
+        "is_valid": false,
+        "missing_fields": [
+          "budget",
+          "days"
+        ],
+        "normalized_input": {
+          "origin": "Hà Nội",
+          "destination": null,
+          "destination_type": "beach",
+          "budget": null,
+          "people": 1,
+          "days": null,
+          "nights": null,
+          "season": null,
+          "interests": [
+            "beach"
+          ]
+        },
+        "assumptions": [
+          "User did not provide origin point, using default.",
+          "User did not provide number of people, assumed 1 person."
+        ],
+        "follow_up_question": "Bạn cần cung cấp thêm thông tin: ngân sách của bạn là bao nhiêu? (VD: 5 triệu), bạn muốn đi trong bao nhiêu ngày? (VD: 3 ngày)"
+      },
+      "current_trip": {
+        "origin": "Hà Nội",
+        "people": 1
+      }
+    }
   }
 ]
