@@ -6,3 +6,11 @@ __pycache__/
 models/
 .venv
 
+.venv/
+venv/
+env/
+
+*.py[cod]
+*$py.class
+
+.pycache/
