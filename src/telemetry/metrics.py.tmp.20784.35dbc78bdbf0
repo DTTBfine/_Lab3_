@@ -1,0 +1,91 @@
+import statistics
+from typing import Any, Dict, List
+
+from src.telemetry.logger import logger
+
+# USD per 1K tokens (input, output)
+_PRICE_TABLE: Dict[str, Dict[str, float]] = {
+    "gpt-4o":               {"input": 0.0025,   "output": 0.010},
+    "gpt-4o-mini":          {"input": 0.00015,  "output": 0.0006},
+    "gpt-4-turbo":          {"input": 0.010,    "output": 0.030},
+    "gpt-3.5-turbo":        {"input": 0.0005,   "output": 0.0015},
+    "gemini-1.5-flash":     {"input": 0.000075, "output": 0.0003},
+    "gemini-1.5-pro":       {"input": 0.00125,  "output": 0.005},
+    "gemini-2.0-flash":     {"input": 0.0001,   "output": 0.0004},
+    "gemini-2.0-flash-exp": {"input": 0.0001,   "output": 0.0004},
+}
+
+_FALLBACK_COST_PER_1K = 0.002
+
+
+class PerformanceTracker:
+    """
+    Tracking industry-standard metrics for LLMs.
+    Collects per-request data and provides session-level aggregations.
+    """
+
+    def __init__(self) -> None:
+        self.session_metrics: List[Dict[str, Any]] = []
+
+    def track_request(
+        self,
+        provider: str,
+        model: str,
+        usage: Dict[str, int],
+        latency_ms: int,
+        agent_name: str = "unknown",
+    ) -> None:
+        """Records one LLM call to the session and emits a telemetry event."""
+        cost = self._calculate_cost(model, usage)
+        metric: Dict[str, Any] = {
+            "provider": provider,
+            "model": model,
+            "agent": agent_name,
+            "prompt_tokens": usage.get("prompt_tokens", 0),
+            "completion_tokens": usage.get("completion_tokens", 0),
+            "total_tokens": usage.get("total_tokens", 0),
+            "latency_ms": latency_ms,
+            "cost_usd": cost,
+        }
+        self.session_metrics.append(metric)
+        logger.log_event("LLM_METRIC", metric)
+
+    def _calculate_cost(self, model: str, usage: Dict[str, int]) -> float:
+        pricing = _PRICE_TABLE.get(model)
+        if not pricing:
+            return (usage.get("total_tokens", 0) / 1000) * _FALLBACK_COST_PER_1K
+        prompt_cost = (usage.get("prompt_tokens", 0) / 1000) * pricing["input"]
+        completion_cost = (usage.get("completion_tokens", 0) / 1000) * pricing["output"]
+        return round(prompt_cost + completion_cost, 8)
+
+    def get_summary_stats(self) -> Dict[str, Any]:
+        """Returns P50, P99, avg latency, avg tokens, and total cost for the session."""
+        if not self.session_metrics:
+            return {"call_count": 0}
+
+        latencies = sorted(m["latency_ms"] for m in self.session_metrics)
+        n = len(latencies)
+        total_tokens = sum(m["total_tokens"] for m in self.session_metrics)
+        total_cost = sum(m["cost_usd"] for m in self.session_metrics)
+
+        def percentile(sorted_list: List[int], pct: float) -> int:
+            idx = max(0, int(len(sorted_list) * pct / 100) - 1)
+            return sorted_list[idx]
+
+        return {
+            "call_count": n,
+            "p50_latency_ms": percentile(latencies, 50),
+            "p99_latency_ms": percentile(latencies, 99),
+            "avg_latency_ms": round(statistics.mean(latencies)),
+            "total_tokens": total_tokens,
+            "avg_tokens_per_call": round(total_tokens / n),
+            "total_cost_usd": round(total_cost, 6),
+        }
+
+    def reset(self) -> None:
+        """Clears session metrics (call at the start of each test run)."""
+        self.session_metrics.clear()
+
+
+# Global tracker instance
+tracker = PerformanceTracker()
