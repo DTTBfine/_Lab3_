@@ -243,24 +243,9 @@ def rewrite_user_request(llm, history: list, user_input: str) -> str:
     return rewritten or user_input
 
 
-def run_planner_turn(llm, standalone_request: str) -> tuple:
-    timings: dict = {}
-
-    t0 = time.perf_counter()
-    params = normalize_trip_params(intent_agent(llm, standalone_request))
-    timings["intent_s"] = round(time.perf_counter() - t0, 2)
-
-    if params.get("origin_missing"):
-        answer = "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn"
-        metadata = {
-            "standalone_request": standalone_request,
-            "params": params,
-            "needs_origin": True,
-            "timings": timings,
-        }
-        return answer, metadata
 def run_planner_turn(llm, standalone_request: str, current_trip: dict = None) -> tuple:
     """Run a single turn of the travel planner with input validation."""
+    timings: dict = {}
 
     # Merge with existing trip info
     trip = dict(current_trip) if current_trip else {}
@@ -341,12 +326,7 @@ def run_planner_turn(llm, standalone_request: str, current_trip: dict = None) ->
         "timings": timings,
         "perf_stats": tracker.get_summary_stats(),
     }
-    return answer, metadata
-
-    # Clear trip after successful planning
-    cleared_trip = {}
-
-    return answer, cleared_trip, validation_result
+    return answer, {}, validation_result
 
 
 def print_intro(history: list) -> None:

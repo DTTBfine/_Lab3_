@@ -35,22 +35,20 @@ def get_llm():
 def init_state() -> None:
     if "history_store" not in st.session_state:
         st.session_state.history_store = load_history_store()
-
-
-def reset_history() -> None:
-    st.session_state.history_store = reset_history_store()
+    if "current_trip" not in st.session_state:
+        st.session_state.current_trip = {}
 
 
 def create_new_chat() -> None:
     create_conversation(st.session_state.history_store)
     save_history_store(st.session_state.history_store)
     if "history" not in st.session_state:
-        st.session_state.history = load_history()
+        st.session_state.history = []
     if "current_trip" not in st.session_state:
         st.session_state.current_trip = {}
 
 
-def reset_history() -> None:
+def reset_all_history() -> None:
     st.session_state.history = []
     st.session_state.current_trip = {}
     save_history([])
@@ -81,6 +79,7 @@ def handle_user_message(user_input: str) -> None:
     total_start = time.perf_counter()
     rewrite_time = 0.0
     metadata = None
+    answer = ""
 
     try:
         llm = get_llm()
@@ -94,12 +93,59 @@ def handle_user_message(user_input: str) -> None:
         )
         rewrite_time = time.perf_counter() - t0
 
+        # Validate input
+        validation_result = validate_travel_input(standalone_request)
+
+        # Update current trip state
+        current_trip = dict(st.session_state.current_trip)
+        normalized = validation_result.get("normalized_input", {})
+        if normalized.get("origin"):
+            current_trip["origin"] = normalized["origin"]
+        if normalized.get("destination"):
+            current_trip["destination"] = normalized["destination"]
+        if normalized.get("budget"):
+            current_trip["budget"] = normalized["budget"]
+        if normalized.get("people"):
+            current_trip["people"] = normalized["people"]
+        if normalized.get("days"):
+            current_trip["days"] = normalized["days"]
+        st.session_state.current_trip = current_trip
+
         with st.status("Đang xử lý yêu cầu...", expanded=True):
             st.write(f"Chuẩn hóa hội thoại ({rewrite_time:.1f}s): {standalone_request}")
-            answer, metadata = run_planner_turn(llm, standalone_request)
-            _render_timing_breakdown(metadata, rewrite_time)
+
+            # Check if validation passed
+            if not validation_result["is_valid"]:
+                follow_up = validation_result.get("follow_up_question", "")
+                assumptions = validation_result.get("assumptions", [])
+
+                st.warning("⚠️ Thiếu thông tin cần thiết:")
+                if assumptions:
+                    st.info("Giả định: " + "; ".join(assumptions))
+                if follow_up:
+                    st.info(follow_up)
+                answer = follow_up or "Bạn cần cung cấp thêm thông tin."
+                metadata = {"validation": validation_result}
+            else:
+                # Show assumptions if any
+                if validation_result.get("assumptions"):
+                    st.info("Giả định: " + "; ".join(validation_result["assumptions"]))
+
+                # Run planning
+                from chatbot import run_planner_turn
+                answer, cleared_trip, validation_result = run_planner_turn(
+                    llm, standalone_request, current_trip
+                )
+                st.session_state.current_trip = cleared_trip
+                metadata = {
+                    "validation": validation_result,
+                    "rewrite_s": round(rewrite_time, 2),
+                }
+
     except Exception as error:
         answer = f"Mình chưa xử lý được lượt này: {error}"
+        st.session_state.current_trip = {}
+        metadata = {"error": str(error)}
 
     total_time = time.perf_counter() - total_start
     if metadata is None:
@@ -161,7 +207,7 @@ def render_sidebar() -> None:
             st.rerun()
     with col2:
         if st.button("Xóa tất cả", type="secondary", use_container_width=True):
-            reset_history()
+            reset_all_history()
             st.rerun()
 
     active_messages = get_active_messages(st.session_state.history_store)
@@ -169,74 +215,6 @@ def render_sidebar() -> None:
 
     with st.expander("Xem cấu trúc lưu trữ", expanded=False):
         st.code("history.json -> conversations[] -> messages[]")
-
-
-def _render_timing_breakdown(metadata: dict | None, rewrite_time: float) -> None:
-    if not metadata:
-        return
-    t = metadata.get("timings", {})
-    labels = [
-        ("Ý định", t.get("intent_s")),
-        ("Địa điểm", t.get("destination_s")),
-        ("Thu thập dữ liệu", t.get("research_s")),
-        ("Lập kế hoạch", t.get("planning_s")),
-    ]
-    available = [(label, val) for label, val in labels if val is not None]
-    if not available:
-        return
-    cols = st.columns(len(available))
-    for col, (label, val) in zip(cols, available):
-        col.metric(label, f"{val}s")
-        # Validate input
-        validation_result = validate_travel_input(standalone_request)
-
-        # Update current trip state
-        current_trip = dict(st.session_state.current_trip)
-        normalized = validation_result.get("normalized_input", {})
-        if normalized.get("origin"):
-            current_trip["origin"] = normalized["origin"]
-        if normalized.get("destination"):
-            current_trip["destination"] = normalized["destination"]
-        if normalized.get("budget"):
-            current_trip["budget"] = normalized["budget"]
-        if normalized.get("people"):
-            current_trip["people"] = normalized["people"]
-        if normalized.get("days"):
-            current_trip["days"] = normalized["days"]
-        st.session_state.current_trip = current_trip
-
-        with st.status("Đang xử lý yêu cầu...", expanded=False):
-            st.write(f"Yêu cầu đã chuẩn hóa: {standalone_request}")
-
-            # Check if validation passed
-            if not validation_result["is_valid"]:
-                follow_up = validation_result.get("follow_up_question", "")
-                assumptions = validation_result.get("assumptions", [])
-
-                st.warning("⚠️ Thiếu thông tin cần thiết:")
-                if assumptions:
-                    st.info("Giả định: " + "; ".join(assumptions))
-                if follow_up:
-                    st.info(follow_up)
-                answer = follow_up or "Bạn cần cung cấp thêm thông tin."
-            else:
-                # Show assumptions if any
-                if validation_result.get("assumptions"):
-                    st.info("Giả định: " + "; ".join(validation_result["assumptions"]))
-
-                # Run planning
-                from chatbot import run_planner_turn
-                answer, cleared_trip, _ = run_planner_turn(
-                    llm, standalone_request, current_trip
-                )
-                st.session_state.current_trip = cleared_trip
-    except Exception as error:
-        answer = f"Mình chưa xử lý được lượt này: {error}"
-        st.session_state.current_trip = {}
-
-    append_history(st.session_state.history, "assistant", answer, metadata={
-        "current_trip": st.session_state.current_trip,
-    })
 
 
 def main() -> None:

@@ -32,6 +32,8 @@ class PerformanceTracker:
 
     def __init__(self) -> None:
         self.session_metrics: List[Dict[str, Any]] = []
+        self.api_tool_metrics: List[Dict[str, Any]] = []
+        self.validation_metrics: List[Dict[str, Any]] = []
 
     def track_request(
         self,
@@ -52,13 +54,18 @@ class PerformanceTracker:
             "total_tokens": usage.get("total_tokens", 0),
             "latency_ms": latency_ms,
             "cost_usd": cost,
-            "cost_estimate": self._calculate_cost(model, usage)
         }
         self.session_metrics.append(metric)
         logger.log_event("LLM_METRIC", metric)
 
-    def track_api_tool(self, tool_name: str, destination: str, latency_ms: int,
-                       success: bool, error: str = None):
+    def track_api_tool(
+        self,
+        tool_name: str,
+        destination: str,
+        latency_ms: int,
+        success: bool,
+        error: str = None,
+    ) -> None:
         """Track API tool call metrics."""
         metric = {
             "tool_name": tool_name,
@@ -70,20 +77,27 @@ class PerformanceTracker:
         self.api_tool_metrics.append(metric)
         logger.log_api_tool(tool_name, destination, latency_ms, success, error)
 
-    def track_validation(self, is_valid: bool, missing_fields: List[str],
-                        assumptions: List[str]):
+    def track_validation(
+        self,
+        is_valid: bool,
+        missing_fields: List[str],
+        assumptions: List[str],
+    ) -> None:
         """Track validation metrics."""
         metric = {
             "is_valid": is_valid,
             "missing_fields": missing_fields,
             "assumptions_count": len(assumptions),
-            "validation_missing_fields_count": len(missing_fields),
         }
         self.validation_metrics.append(metric)
         logger.log_event("VALIDATION_METRIC", metric)
 
-    def track_async_research(self, destinations: List[str], total_latency_ms: int,
-                             tool_results: List[Dict]):
+    def track_async_research(
+        self,
+        destinations: List[str],
+        total_latency_ms: int,
+        tool_results: List[Dict],
+    ) -> None:
         """Track async research metrics."""
         total_tools = 0
         failed_tools = 0
@@ -101,10 +115,12 @@ class PerformanceTracker:
             "api_tool_success_count": total_tools - failed_tools,
             "api_tool_failure_count": failed_tools,
         }
-        logger.log_async_research(destinations, total_latency_ms, total_tools, failed_tools)
-        return metric
+        logger.log_async_research(
+            destinations, total_latency_ms, total_tools, failed_tools
+        )
 
     def _calculate_cost(self, model: str, usage: Dict[str, int]) -> float:
+        """Calculate cost based on model pricing table."""
         pricing = _PRICE_TABLE.get(model)
         if not pricing:
             return (usage.get("total_tokens", 0) / 1000) * _FALLBACK_COST_PER_1K
@@ -120,7 +136,7 @@ class PerformanceTracker:
         latencies = sorted(m["latency_ms"] for m in self.session_metrics)
         n = len(latencies)
         total_tokens = sum(m["total_tokens"] for m in self.session_metrics)
-        total_cost = sum(m["cost_usd"] for m in self.session_metrics)
+        total_cost = sum(m.get("cost_usd", 0) for m in self.session_metrics)
 
         def percentile(sorted_list: List[int], pct: float) -> int:
             idx = max(0, int(len(sorted_list) * pct / 100) - 1)
@@ -132,14 +148,15 @@ class PerformanceTracker:
             "p99_latency_ms": percentile(latencies, 99),
             "avg_latency_ms": round(statistics.mean(latencies)),
             "total_tokens": total_tokens,
-            "avg_tokens_per_call": round(total_tokens / n),
+            "avg_tokens_per_call": round(total_tokens / n) if n > 0 else 0,
             "total_cost_usd": round(total_cost, 6),
         }
 
     def reset(self) -> None:
-        """Clears session metrics (call at the start of each test run)."""
+        """Clears session metrics."""
         self.session_metrics.clear()
-
+        self.api_tool_metrics.clear()
+        self.validation_metrics.clear()
 
     def get_session_summary(self) -> Dict[str, Any]:
         """Get summary of all metrics for the session."""
@@ -147,12 +164,19 @@ class PerformanceTracker:
             "llm_requests": len(self.session_metrics),
             "total_tokens": sum(m["total_tokens"] for m in self.session_metrics),
             "api_tool_calls": len(self.api_tool_metrics),
-            "api_tool_success_count": sum(1 for m in self.api_tool_metrics if m["success"]),
-            "api_tool_failure_count": sum(1 for m in self.api_tool_metrics if not m["success"]),
+            "api_tool_success_count": sum(
+                1 for m in self.api_tool_metrics if m["success"]
+            ),
+            "api_tool_failure_count": sum(
+                1 for m in self.api_tool_metrics if not m["success"]
+            ),
             "validations": len(self.validation_metrics),
             "valid_inputs": sum(1 for m in self.validation_metrics if m["is_valid"]),
-            "invalid_inputs": sum(1 for m in self.validation_metrics if not m["is_valid"]),
+            "invalid_inputs": sum(
+                1 for m in self.validation_metrics if not m["is_valid"]
+            ),
         }
+
 
 # Global tracker instance
 tracker = PerformanceTracker()
