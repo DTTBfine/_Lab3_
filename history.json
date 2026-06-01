@@ -1,86 +1,419 @@
-[
-  {
-    "timestamp": "2026-06-01T16:02:44",
-    "role": "user",
-    "content": "Gợi ý cho tôi chuyến đi biển vào cuối tuần tới"
-  },
-  {
-    "timestamp": "2026-06-01T16:02:48",
-    "role": "assistant",
-    "content": "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn",
-    "metadata": {
-      "standalone_request": "Gợi ý cho tôi chuyến đi biển vào cuối tuần tới",
-      "params": {
-        "destination": null,
-        "destination_candidates": [],
-        "origin": null,
-        "origin_missing": true,
-        "days": 2,
-        "budget_vnd": null,
-        "departure_date": "2026-06-06",
-        "return_date": "2026-06-07",
-        "adults": 1,
-        "transport_mode": null,
-        "cuisine": null,
-        "theme": "beach",
-        "constraints": [
-          "cuối tuần tới",
-          "đi biển"
-        ]
-      },
-      "needs_origin": true
-    }
-  },
-  {
-    "timestamp": "2026-06-01T16:02:56",
-    "role": "user",
-    "content": "Hà Nội"
-  },
-  {
-    "timestamp": "2026-06-01T16:04:18",
-    "role": "assistant",
-    "content": "### Tóm tắt yêu cầu\nBạn đang lên kế hoạch cho một chuyến du lịch biển cuối tuần từ Hà Nội trong thời gian từ ngày 6-6-2026 đến ngày 7-6-2026, với mục tiêu chính là thư giãn tại bãi biển.\n\n### Bảng so sánh phương án\n\n| Tiêu chí              | Cát Bà, Hải Phòng                                | Sầm Sơn, Thanh Hóa                  |\n|-----------------------|--------------------------------------------------|-------------------------------------|\n| Khoảng cách (tuyến thẳng) | 128.8 km                                       | 143 km                              |\n| Dự báo thời tiết      | 28.7°C - 32.1°C, 4-8% mưa                       | 27.1°C - 34.2°C, 27-37% mưa        |\n| Chi phí di chuyển ước tính | 563.320 VND - 1.046.167 VND                       | 625.470 VND - 1.161.588 VND         |\n| Khách sạn             | Có 4 khách sạn trong khu vực                      | Chưa có dữ liệu                      |\n| Nhà hàng              | Có 4 nhà hàng                                      | Chưa có dữ liệu                      |\n| Điểm tham quan        | Dữ liệu tạm thời không truy cập được               | 2 điểm (Đền Đệ Tứ, Làng mây tre đan Hoằng Thịnh) |\n\n### Chi tiết từng phương án\n\n#### 1. Cát Bà, Hải Phòng\n- **Thời tiết**: Thích hợp cho du lịch ngoài trời với nhiệt độ dao động từ 28.7°C đến 32.1°C và khả năng mưa thấp (4-8%).\n- **Chi phí di chuyển**: Khoảng 563.320 VND - 1.046.167 VND từ Hà Nội bằng ô tô.\n- **Khách sạn**: Một số lựa chọn như Quang Minh, Princes Hotel, Phương Linh, Nhị Anh.\n- **Nhà hàng**: Một số nơi để thưởng thức ẩm thực địa phương như Ha Vy, Green Mango, Phong an lang, My Way.\n- **Điểm tham quan**: Dữ liệu bị thiếu, kiểm tra thêm các thông tin về hoạt động giải trí hoặc tour tại địa phương.\n\n#### 2. Sầm Sơn, Thanh Hóa\n- **Thời tiết**: Nhiệt độ cao hơn với dao động từ 27.1°C đến 34.2°C và khả năng mưa cao hơn (27-37%).\n- **Chi phí di chuyển**: Khoảng 625.470 VND - 1.161.588 VND từ Hà Nội bằng ô tô.\n- **Khách sạn**: Dữ liệu bị thiếu, cần tham khảo thêm các ứng dụng đặt phòng trực tuyến.\n- **Nhà hàng**: Chưa có dữ liệu, nên kiểm tra thêm từ các nguồn khác để có lựa chọn phù hợp.\n- **Điểm tham quan**: Đền Đệ Tứ và Làng mây tre đan Hoằng Thịnh là hai điểm du lịch nổi bật.\n\n### Lịch trình gợi ý\n\n#### Cát Bà, Hải Phòng\n- **Ngày 1**: Khởi hành từ Hà Nội, nhận phòng tại khách sạn. Buổi chiều, thăm quan và tắm biển.\n- **Ngày 2**: Tham gia các hoạt động ngoài trời hoặc nghỉ ngơi thư giãn tại bãi biển, trở về Hà Nội vào buổi chiều.\n\n#### Sầm Sơn, Thanh Hóa\n- **Ngày 1**: Khởi hành từ Hà Nội và nhận phòng. Chiều thư giãn tại bãi biển.\n- **Ngày 2**: Thăm các điểm du lịch như Đền Đệ Tứ hoặc Làng mây tre đan Hoằng Thịnh, về lại Hà Nội.\n\n### Ước tính ngân sách\n- **Cát Bà, Hải Phòng**: Ngân sách cần trừ ra chi phí di chuyển (563.320 VND - 1.046.167 VND) cho các hoạt động khác như ăn uống, vui chơi, và lưu trú.\n- **Sầm Sơn, Thanh Hóa**: Ngân sách cần trừ ra chi phí di chuyển (625.470 VND - 1.161.588 VND) cho hoạt động và dịch vụ khác.\n\n### Lưu ý\n- Do dữ liệu về khách sạn và nhà hàng không đầy đủ, nên kiểm tra chi tiết trước khi quyết định đặt chỗ.\n- Thời tiết có thể thay đổi, nên chuẩn bị sẵn các phương tiện bảo vệ dưới mưa.\n- Chi phí di chuyển là ước tính, vui lòng xác nhận giá thực tế gần với thời điểm đi lại.",
-    "metadata": {
-      "standalone_request": "Tôi cần gợi ý cho một chuyến đi biển vào cuối tuần tới, xuất phát từ Hà Nội.",
-      "params": {
-        "destination": null,
-        "destination_candidates": [],
-        "origin": "Hà Nội",
-        "origin_missing": false,
-        "days": 2,
-        "budget_vnd": null,
-        "departure_date": "2026-06-06",
-        "return_date": "2026-06-07",
-        "adults": 1,
-        "transport_mode": null,
-        "cuisine": null,
-        "theme": "beach",
-        "constraints": [
-          "đi biển",
-          "cuối tuần",
-          "xuất phát từ Hà Nội"
-        ]
-      },
-      "destination_options": [
+{
+  "active_conversation_id": "7e18cc64-3f5c-4648-b228-99d56f3adcf2",
+  "conversations": [
+    {
+      "id": "d9318e56-8529-4fa9-b92c-8008fc0dcb4b",
+      "title": "Hội thoại đã lưu",
+      "created_at": "2026-06-01T16:44:08",
+      "updated_at": "2026-06-01T16:44:08",
+      "messages": [
         {
-          "destination": "Cát Bà, Hải Phòng",
-          "reason": "Cát Bà là một hòn đảo đẹp, yên tĩnh với những bãi biển trong xanh và gần gũi với thiên nhiên, phù hợp cho chuyến đi biển cuối tuần từ Hà Nội.",
-          "fit_tags": [
-            "beach",
-            "weekend"
-          ],
-          "suggested_transport_mode": "car"
+          "timestamp": "2026-06-01T16:02:44",
+          "role": "user",
+          "content": "Gợi ý cho tôi chuyến đi biển vào cuối tuần tới"
         },
         {
-          "destination": "Sầm Sơn, Thanh Hóa",
-          "reason": "Sầm Sơn nổi tiếng với bãi biển rộng lớn và các dịch vụ du lịch phát triển, dễ dàng di chuyển từ Hà Nội để tận hưởng chuyến đi cuối tuần.",
-          "fit_tags": [
-            "beach",
-            "weekend"
-          ],
-          "suggested_transport_mode": "car"
+          "timestamp": "2026-06-01T16:02:48",
+          "role": "assistant",
+          "content": "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn",
+          "metadata": {
+            "standalone_request": "Gợi ý cho tôi chuyến đi biển vào cuối tuần tới",
+            "params": {
+              "destination": null,
+              "destination_candidates": [],
+              "origin": null,
+              "origin_missing": true,
+              "days": 2,
+              "budget_vnd": null,
+              "departure_date": "2026-06-06",
+              "return_date": "2026-06-07",
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "beach",
+              "constraints": [
+                "cuối tuần tới",
+                "đi biển"
+              ]
+            },
+            "needs_origin": true
+          }
+        },
+        {
+          "timestamp": "2026-06-01T16:02:56",
+          "role": "user",
+          "content": "Hà Nội"
+        },
+        {
+          "timestamp": "2026-06-01T16:04:18",
+          "role": "assistant",
+          "content": "### Tóm tắt yêu cầu\nBạn đang lên kế hoạch cho một chuyến du lịch biển cuối tuần từ Hà Nội trong thời gian từ ngày 6-6-2026 đến ngày 7-6-2026, với mục tiêu chính là thư giãn tại bãi biển.\n\n### Bảng so sánh phương án\n\n| Tiêu chí              | Cát Bà, Hải Phòng                                | Sầm Sơn, Thanh Hóa                  |\n|-----------------------|--------------------------------------------------|-------------------------------------|\n| Khoảng cách (tuyến thẳng) | 128.8 km                                       | 143 km                              |\n| Dự báo thời tiết      | 28.7°C - 32.1°C, 4-8% mưa                       | 27.1°C - 34.2°C, 27-37% mưa        |\n| Chi phí di chuyển ước tính | 563.320 VND - 1.046.167 VND                       | 625.470 VND - 1.161.588 VND         |\n| Khách sạn             | Có 4 khách sạn trong khu vực                      | Chưa có dữ liệu                      |\n| Nhà hàng              | Có 4 nhà hàng                                      | Chưa có dữ liệu                      |\n| Điểm tham quan        | Dữ liệu tạm thời không truy cập được               | 2 điểm (Đền Đệ Tứ, Làng mây tre đan Hoằng Thịnh) |\n\n### Chi tiết từng phương án\n\n#### 1. Cát Bà, Hải Phòng\n- **Thời tiết**: Thích hợp cho du lịch ngoài trời với nhiệt độ dao động từ 28.7°C đến 32.1°C và khả năng mưa thấp (4-8%).\n- **Chi phí di chuyển**: Khoảng 563.320 VND - 1.046.167 VND từ Hà Nội bằng ô tô.\n- **Khách sạn**: Một số lựa chọn như Quang Minh, Princes Hotel, Phương Linh, Nhị Anh.\n- **Nhà hàng**: Một số nơi để thưởng thức ẩm thực địa phương như Ha Vy, Green Mango, Phong an lang, My Way.\n- **Điểm tham quan**: Dữ liệu bị thiếu, kiểm tra thêm các thông tin về hoạt động giải trí hoặc tour tại địa phương.\n\n#### 2. Sầm Sơn, Thanh Hóa\n- **Thời tiết**: Nhiệt độ cao hơn với dao động từ 27.1°C đến 34.2°C và khả năng mưa cao hơn (27-37%).\n- **Chi phí di chuyển**: Khoảng 625.470 VND - 1.161.588 VND từ Hà Nội bằng ô tô.\n- **Khách sạn**: Dữ liệu bị thiếu, cần tham khảo thêm các ứng dụng đặt phòng trực tuyến.\n- **Nhà hàng**: Chưa có dữ liệu, nên kiểm tra thêm từ các nguồn khác để có lựa chọn phù hợp.\n- **Điểm tham quan**: Đền Đệ Tứ và Làng mây tre đan Hoằng Thịnh là hai điểm du lịch nổi bật.\n\n### Lịch trình gợi ý\n\n#### Cát Bà, Hải Phòng\n- **Ngày 1**: Khởi hành từ Hà Nội, nhận phòng tại khách sạn. Buổi chiều, thăm quan và tắm biển.\n- **Ngày 2**: Tham gia các hoạt động ngoài trời hoặc nghỉ ngơi thư giãn tại bãi biển, trở về Hà Nội vào buổi chiều.\n\n#### Sầm Sơn, Thanh Hóa\n- **Ngày 1**: Khởi hành từ Hà Nội và nhận phòng. Chiều thư giãn tại bãi biển.\n- **Ngày 2**: Thăm các điểm du lịch như Đền Đệ Tứ hoặc Làng mây tre đan Hoằng Thịnh, về lại Hà Nội.\n\n### Ước tính ngân sách\n- **Cát Bà, Hải Phòng**: Ngân sách cần trừ ra chi phí di chuyển (563.320 VND - 1.046.167 VND) cho các hoạt động khác như ăn uống, vui chơi, và lưu trú.\n- **Sầm Sơn, Thanh Hóa**: Ngân sách cần trừ ra chi phí di chuyển (625.470 VND - 1.161.588 VND) cho hoạt động và dịch vụ khác.\n\n### Lưu ý\n- Do dữ liệu về khách sạn và nhà hàng không đầy đủ, nên kiểm tra chi tiết trước khi quyết định đặt chỗ.\n- Thời tiết có thể thay đổi, nên chuẩn bị sẵn các phương tiện bảo vệ dưới mưa.\n- Chi phí di chuyển là ước tính, vui lòng xác nhận giá thực tế gần với thời điểm đi lại.",
+          "metadata": {
+            "standalone_request": "Tôi cần gợi ý cho một chuyến đi biển vào cuối tuần tới, xuất phát từ Hà Nội.",
+            "params": {
+              "destination": null,
+              "destination_candidates": [],
+              "origin": "Hà Nội",
+              "origin_missing": false,
+              "days": 2,
+              "budget_vnd": null,
+              "departure_date": "2026-06-06",
+              "return_date": "2026-06-07",
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "beach",
+              "constraints": [
+                "đi biển",
+                "cuối tuần",
+                "xuất phát từ Hà Nội"
+              ]
+            },
+            "destination_options": [
+              {
+                "destination": "Cát Bà, Hải Phòng",
+                "reason": "Cát Bà là một hòn đảo đẹp, yên tĩnh với những bãi biển trong xanh và gần gũi với thiên nhiên, phù hợp cho chuyến đi biển cuối tuần từ Hà Nội.",
+                "fit_tags": [
+                  "beach",
+                  "weekend"
+                ],
+                "suggested_transport_mode": "car"
+              },
+              {
+                "destination": "Sầm Sơn, Thanh Hóa",
+                "reason": "Sầm Sơn nổi tiếng với bãi biển rộng lớn và các dịch vụ du lịch phát triển, dễ dàng di chuyển từ Hà Nội để tận hưởng chuyến đi cuối tuần.",
+                "fit_tags": [
+                  "beach",
+                  "weekend"
+                ],
+                "suggested_transport_mode": "car"
+              }
+            ]
+          }
+        },
+        {
+          "timestamp": "2026-06-01T16:29:53",
+          "role": "user",
+          "content": "du lịch thông thường thì sao?"
+        },
+        {
+          "timestamp": "2026-06-01T16:31:02",
+          "role": "assistant",
+          "content": "### Tóm tắt yêu cầu:\n\nBạn muốn có một chuyến du lịch cuối tuần, thư giãn tại bãi biển từ Hà Nội vào ngày 6-6-2026 đến ngày 7-6-2026. Hai địa điểm được cân nhắc là Cát Bà, Hải Phòng và Sầm Sơn, Thanh Hóa. Chúng ta sẽ xem xét chi phí di chuyển, thời tiết, và điểm tham quan để lựa chọn điểm đến phù hợp.\n\n### Bảng so sánh phương án:\n\n| Tiêu chí                  | Cát Bà, Hải Phòng                     | Sầm Sơn, Thanh Hóa                  |\n|---------------------------|---------------------------------------|-------------------------------------|\n| Thời tiết (dự kiến)       | Nắng nhẹ, ít khả năng mưa             | Nhiệt độ cao, khả năng mưa cao      |\n| Điểm tham quan            | Hang Tối, Hang Dơi                   | Đền Đệ Tứ, Làng mây tre đan Hoằng Thịnh |\n| Chi phí di chuyển (ước tính) | 1.200.000 - 2.600.000 VND           | 1.200.000 - 2.600.000 VND           |\n| Chỗ ở                     | Dữ liệu chưa có sẵn                  | Khách sạn bộ Xây Dựng, Khách sạn Hoa Hồng 1 (danh sách) |\n\n### Chi tiết từng phương án:\n\n#### 1. Cát Bà, Hải Phòng\n- **Thời tiết**: Nhiệt độ từ 28.7°C đến 32.1°C, ít khả năng có mưa với 4-8%.\n- **Điểm tham quan**: Hang Tối và Hang Dơi là những địa điểm gần khu vực Cát Bà.\n- **Chi phí di chuyển**: Khoảng 1.200.000 - 2.600.000 VND cho vé máy bay một chiều.\n- **Chỗ ở và ăn uống**: Hiện không có dữ liệu chi tiết về khách sạn và nhà hàng, cần kiểm tra thêm trên các trang đặt phòng.\n\n#### 2. Sầm Sơn, Thanh Hóa\n- **Thời tiết**: Nhiệt độ từ 27.1°C đến 34.2°C, có khả năng mưa cao với 27-37%.\n- **Điểm tham quan**: Có thể ghé thăm Đền Đệ Tứ và Làng mây tre đan Hoằng Thịnh.\n- **Chi phí di chuyển**: Khoảng 1.200.000 - 2.600.000 VND cho vé máy bay một chiều.\n- **Chỗ ở**: Lựa chọn bao gồm Khách sạn bộ Xây Dựng, Doanh Nghiệp Tư Nhân Khách Sạn Hoàng Long, Khách Sạn Hoa Hồng 1.\n\n### Lịch trình gợi ý:\n\n#### **Ngày 1: Di chuyển và khám phá**\n- **Sáng**: Khởi hành từ Hà Nội đi đến địa điểm lựa chọn.\n- **Chiều**: Nhận phòng và đi thăm các điểm tham quan (Hang Tối, Hang Dơi ở Cát Bà; Đền Đệ Tứ, Làng Hoằng Thịnh ở Sầm Sơn).\n- **Tối**: Thưởng thức bữa tối tại bãi biển.\n\n#### **Ngày 2: Thư giãn và trở về**\n- **Sáng**: Thư giãn tại bãi biển.\n- **Chiều**: Check-out và trở về Hà Nội.\n\n### Ước tính ngân sách:\n\n- **Di chuyển**: 1.200.000 - 2.600.000 VND/khứ hồi.\n- **Chi phí lưu trú và ăn uống**: Chưa có thông tin chi tiết, nên cần kiểm tra thêm.\n  \n### Lưu ý:\n- Kiểm tra lại giá vé di chuyển thời gian thực.\n- Điều kiện thời tiết có khả năng thay đổi, nên chuẩn bị kế hoạch dự phòng.\n- Xem xét đặt chỗ ở trước và kiểm tra phản hồi của người khác qua các nền tảng như Booking hoặc Agoda.",
+          "metadata": {
+            "standalone_request": "Bạn đang lên kế hoạch cho một chuyến du lịch thông thường biển cuối tuần từ Hà Nội trong thời gian từ ngày 6-6-2026 đến ngày 7-6-2026. Yêu cầu của bạn là thư giãn tại bãi biển, với các lựa chọn điểm đến gồm Cát Bà, Hải Phòng hoặc Sầm Sơn, Thanh Hóa. Hãy xem xét chi phí di chuyển, thời tiết, và các điểm tham quan phù hợp với ngân sách cá nhân của bạn khi lựa chọn điểm đến.",
+            "params": {
+              "destination": null,
+              "destination_candidates": [
+                "Cát Bà, Hải Phòng",
+                "Sầm Sơn, Thanh Hóa"
+              ],
+              "origin": "Hà Nội",
+              "origin_missing": false,
+              "days": 2,
+              "budget_vnd": null,
+              "departure_date": "2026-06-06",
+              "return_date": "2026-06-07",
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "beach",
+              "constraints": [
+                "thư giãn tại bãi biển",
+                "xem xét chi phí di chuyển",
+                "thời tiết",
+                "điểm tham quan"
+              ]
+            },
+            "destination_options": [
+              {
+                "destination": "Cát Bà, Hải Phòng",
+                "reason": "Địa điểm ứng viên được bóc tách từ yêu cầu.",
+                "fit_tags": [
+                  "beach"
+                ]
+              },
+              {
+                "destination": "Sầm Sơn, Thanh Hóa",
+                "reason": "Địa điểm ứng viên được bóc tách từ yêu cầu.",
+                "fit_tags": [
+                  "beach"
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "0670026b-2933-49b7-a0d6-78f07ea52f1f",
+      "title": "Gợi ý lịch trình du lịch mùa này, tôi xuất phát ...",
+      "created_at": "2026-06-01T16:44:14",
+      "updated_at": "2026-06-01T16:46:23",
+      "messages": [
+        {
+          "timestamp": "2026-06-01T16:44:41",
+          "role": "user",
+          "content": "Gợi ý lịch trình du lịch mùa này, tôi xuất phát từ Hà Nội"
+        },
+        {
+          "timestamp": "2026-06-01T16:46:23",
+          "role": "assistant",
+          "content": "### Tóm tắt yêu cầu\nBạn đang tìm kiếm gợi ý lịch trình du lịch cho mùa hè, xuất phát từ Hà Nội với tiêu chí là chuyến đi kéo dài 3 ngày. Dưới đây là các phương án du lịch phù hợp với yêu cầu của bạn.\n\n### Bảng so sánh các phương án\n\n| Điểm đến    | Thời tiết  | Phương tiện di chuyển  | Giá ước tính (vé một chiều) | Điểm tham quan chính  |\n|-------------|------------|------------------------|-----------------------------|-----------------------|\n| Đà Nẵng     | Nhiệt độ từ 26°C - 35°C, ít mưa | Máy bay  | 1.200.000 - 2.600.000 VND | Bãi biển Mỹ Khê, Bãi Cháy |\n| Sapa        | Nhiệt độ từ 10°C - 23°C, có mưa | Tàu     | 12.153.147 - 27.778.621 VND | Kalatepe |\n| Cát Bà      | Nhiệt độ từ 28°C - 32°C, có thể có mưa  | Ô tô   | 563.320 - 1.046.167 VND | Không có dữ liệu chi tiết |\n\n### Chi tiết từng phương án\n\n#### Phương án 1: Du lịch tới Đà Nẵng\n- **Lịch trình gợi ý:**\n  - **Ngày 1:** Bay từ Hà Nội đến Đà Nẵng. Buổi chiều: Thăm quan Bãi biển Mỹ Khê.\n  - **Ngày 2:** Tham quan Ban Co Peak và Thuỷ Sơn.\n  - **Ngày 3:** Thưởng thức cà phê tại các quán như CaPhe Lang Tien, rồi bay về Hà Nội.\n- **Thời tiết:** Khá nóng với nhiệt độ cao nhất lên tới 35°C, phần lớn các ngày khô ráo.\n- **Ước tính ngân sách (chưa bao gồm chỗ ở và ăn uống):** Từ 2.400.000 VND đến 5.200.000 VND (vé máy bay khứ hồi).\n- **Lưu ý:** Nên kiểm tra thêm thông tin mở cửa và giá cả của các khách sạn và nhà hàng.\n\n#### Phương án 2: Du lịch tới Sapa\n- **Lịch trình gợi ý:**\n  - **Ngày 1:** Đi tàu từ Hà Nội đến Sapa. Khám phá Kalatepe vào buổi chiều.\n  - **Ngày 2:** Thưởng thức vẻ đẹp thiên nhiên và khí hậu mát mẻ của Sapa.\n  - **Ngày 3:** Trải nghiệm văn hóa và sản phẩm địa phương trước khi quay lại Hà Nội.\n- **Thời tiết:** Mát mẻ và có thể có mưa, với nhiệt độ thấp chỉ từ 10°C.\n- **Ước tính ngân sách (chưa bao gồm chỗ ở và ăn uống):** Từ 24.306.294 VND đến 55.557.242 VND (vé tàu khứ hồi).\n- **Lưu ý:** Dữ liệu lưu trú và ẩm thực không có sẵn, cần nghiên cứu thêm.\n\n#### Phương án 3: Du lịch tới Cát Bà\n- **Lịch trình gợi ý:**\n  - **Ngày 1:** Chạy xe từ Hà Nội đến Cát Bà. Nghỉ ngơi và tìm hiểu hòn đảo.\n  - **Ngày 2:** Khám phá các bãi biển và tham gia tour sinh thái nếu có.\n  - **Ngày 3:** Chơi thể thao biển hoặc leo núi rồi trở về Hà Nội.\n- **Thời tiết:** Nhiệt độ ấm, có thể gặp mưa trong ngày thứ ba.\n- **Ước tính ngân sách (chưa bao gồm chỗ ở và ăn uống):** Từ 1.126.640 VND đến 2.092.334 VND (chi phí di chuyển khứ hồi).\n- **Lưu ý:** Không có thông tin chi tiết về điểm tham quan và chỗ ở, cần kiểm tra trực tuyến.\n\n### Lưu ý\n- Chi phí di chuyển chỉ là ước tính. Vui lòng kiểm tra kỹ hơn thông tin từ các dịch vụ đặt vé hoặc phương tiện lựa chọn.\n- Thông tin về khách sạn và nhà hàng mang tính gợi ý: hãy kiểm tra thông tin mới nhất và chốt giá trước khi đặt chỗ.\n- Mỗi điểm đến có những ưu điểm riêng, bạn có thể chọn theo sở thích cá nhân và ngân sách.\n\nHy vọng bạn có thể chọn được địa điểm phù hợp và có kỳ nghỉ tuyệt vời!",
+          "metadata": {
+            "standalone_request": "Gợi ý lịch trình du lịch mùa này, tôi xuất phát từ Hà Nội",
+            "params": {
+              "destination": null,
+              "destination_candidates": [],
+              "origin": "Hà Nội",
+              "origin_missing": false,
+              "days": 3,
+              "budget_vnd": null,
+              "departure_date": null,
+              "return_date": null,
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "general",
+              "constraints": [
+                "du lịch mùa hè"
+              ]
+            },
+            "destination_options": [
+              {
+                "destination": "Đà Nẵng",
+                "reason": "Đà Nẵng là điểm du lịch mùa hè lý tưởng với các bãi biển đẹp như Mỹ Khê và Bãi Cháy, phù hợp cho chuyến đi 3 ngày.",
+                "fit_tags": [
+                  "beach",
+                  "relax"
+                ],
+                "suggested_transport_mode": "flight"
+              },
+              {
+                "destination": "Sapa",
+                "reason": "Khí hậu mát mẻ ở Sapa rất lý tưởng để trốn cái nóng mùa hè, kết hợp khám phá văn hóa các dân tộc thiểu số.",
+                "fit_tags": [
+                  "mountain",
+                  "relax"
+                ],
+                "suggested_transport_mode": "train"
+              },
+              {
+                "destination": "Cát Bà",
+                "reason": "Cát Bà là một lựa chọn tuyệt vời trong mùa hè với cảnh quan thiên nhiên tuyệt đẹp và nhiều hoạt động du lịch sinh thái.",
+                "fit_tags": [
+                  "beach",
+                  "relax"
+                ],
+                "suggested_transport_mode": "car"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "120fd364-bf63-4128-8ee3-b40deee498a5",
+      "title": "Gợi ý lịch trình du lịch mùa này",
+      "created_at": "2026-06-01T16:57:16",
+      "updated_at": "2026-06-01T16:58:58",
+      "messages": [
+        {
+          "timestamp": "2026-06-01T16:57:18",
+          "role": "user",
+          "content": "Gợi ý lịch trình du lịch mùa này"
+        },
+        {
+          "timestamp": "2026-06-01T16:57:21",
+          "role": "assistant",
+          "content": "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn",
+          "metadata": {
+            "standalone_request": "Gợi ý lịch trình du lịch mùa này",
+            "params": {
+              "destination": null,
+              "destination_candidates": [],
+              "origin": null,
+              "origin_missing": true,
+              "days": 3,
+              "budget_vnd": null,
+              "departure_date": null,
+              "return_date": null,
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "general",
+              "constraints": [
+                "mùa hè"
+              ]
+            },
+            "needs_origin": true
+          }
+        },
+        {
+          "timestamp": "2026-06-01T16:57:25",
+          "role": "user",
+          "content": "Hà Nội"
+        },
+        {
+          "timestamp": "2026-06-01T16:58:58",
+          "role": "assistant",
+          "content": "### Tóm tắt yêu cầu\nAnh/chị muốn lên lịch trình du lịch mùa hè, khởi hành từ Hà Nội trong khoảng 3 ngày. Hiện không có thông tin cụ thể về điểm đến hay ngân sách giới hạn.\n\n### Bảng so sánh phương án\n| Địa điểm    | Lý do chọn              | Phương tiện gợi ý | Chi phí di chuyển ước tính | Thời tiết dự kiến  |\n|-------------|-------------------------|-------------------|-----------------------------|--------------------|\n| Sapa        | Khí hậu mát mẻ, cảnh thiên nhiên | Xe khách          | 10.416.983 VND - 21.702.048 VND | 12.1°C - 23.8°C, khả năng mưa |\n| Hạ Long     | Cảnh biển đẹp, hoạt động nước | Ô tô              | 568.821 VND - 1.056.383 VND | 27.5°C - 33.3°C, khả năng mưa nhẹ |\n| Ninh Bình   | Phong cảnh thiên nhiên đẹp          | Ô tô              | 378.916 VND - 703.702 VND | 26.6°C - 36.2°C, khả năng mưa |\n\n### Chi tiết từng phương án\n\n#### Phương án 1: Sapa\n- **Thời tiết**: Khí hậu mát mẻ, nhưng có khả năng mưa cao (43% - 93%).\n- **Điểm tham quan**: Kalatepe (khu di tích khảo cổ).\n- **Lưu trú**: Không có thông tin cụ thể, cần tự tìm trên các platform đặt phòng trực tuyến.\n- **Ăn uống**: Không có thông tin cụ thể, cần tự tìm quán ăn hoặc nhà hàng.\n\n**Lịch trình gợi ý**:\n- **Ngày 1**: Khởi hành từ Hà Nội đến Sapa, tham quan Kalatepe.\n- **Ngày 2**: Tham quan đỉnh Fansipan và các khu vực xung quanh.\n- **Ngày 3**: Khám phá ruộng bậc thang và mua sắm tại chợ Sapa.\n\n**Ước tính ngân sách**: Chỉ riêng chi phí di chuyển đã chiếm khoảng 10.416.983 VND - 21.702.048 VND, cần thêm ngân sách cho lưu trú, ăn uống và tham quan.\n\n#### Phương án 2: Hạ Long\n- **Thời tiết**: Nắng đẹp, đôi khi có mưa, nhiệt độ cao.\n- **Điểm tham quan**: Bảo tàng Quảng Ninh, Vịnh Hạ Long, Ha Long Bay Pearl Farm, hòn gà chọi.\n- **Lưu trú**: Lựa chọn từ các khách sạn như Koc moc, Alamo Hotel, Halong Plaza Hotel.\n- **Ăn uống**: Các nhà hàng như Mai Ly, Pizza Hut, Rock House Pizza.\n\n**Lịch trình gợi ý**:\n- **Ngày 1**: Xuất phát từ Hà Nội đến Hạ Long, tham quan Bảo tàng Quảng Ninh và Vịnh Hạ Long.\n- **Ngày 2**: Chơi các hoạt động thể thao nước, đi thăm Pearl Farm.\n- **Ngày 3**: Thư giãn trên du thuyền, thăm hòn Gà Chọi.\n\n**Ước tính ngân sách**: Chi phí di chuyển tầm 568.821 VND - 1.056.383 VND, còn lại cho lưu trú và ăn uống.\n\n#### Phương án 3: Ninh Bình\n- **Thời tiết**: Khá nóng và một số ngày có khả năng mưa cao.\n- **Điểm tham quan**: Không có dữ liệu chi tiết, cần tự tìm thêm thông tin.\n- **Lưu trú**: Khách sạn như Thanh Binh, Kinh Do Hotel.\n- **Ăn uống**: Không có dữ liệu, nên tìm kiếm tùy vị trí.\n\n**Lịch trình gợi ý**:\n- **Ngày 1**: Đi từ Hà Nội đến Ninh Bình, thăm Tam Cốc hoặc Tràng An.\n- **Ngày 2**: Thăm chùa Bái Đính, rừng Cúc Phương.\n- **Ngày 3**: Khám phá các điểm tham quan tùy chọn theo sở thích.\n\n**Ước tính ngân sách**: Chi phí di chuyển khoảng 378.916 VND - 703.702 VND, còn lại cho các chi phí khác.\n\n### Lưu ý\n- Giá di chuyển chỉ là ước tính và có thể thay đổi tùy thuộc vào thời điểm và phương tiện.\n- Nên kiểm tra lại thông tin thời tiết và tình trạng dịch vụ du lịch trước khi đi.\n- Cần thêm thông tin về ngày đi cụ thể và ngân sách để có kế hoạch chính xác hơn.",
+          "metadata": {
+            "standalone_request": "Tôi muốn lên một lịch trình du lịch mùa này khởi hành từ Hà Nội.",
+            "params": {
+              "destination": null,
+              "destination_candidates": [],
+              "origin": "Hà Nội",
+              "origin_missing": false,
+              "days": 3,
+              "budget_vnd": null,
+              "departure_date": null,
+              "return_date": null,
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "general",
+              "constraints": [
+                "du lịch mùa này",
+                "khởi hành từ Hà Nội"
+              ]
+            },
+            "destination_options": [
+              {
+                "destination": "Sapa",
+                "reason": "Sapa là điểm du lịch lý tưởng vào mùa hè với khí hậu mát mẻ, cảnh quan thiên nhiên hùng vĩ, đỉnh Fansipan và ruộng bậc thang tuyệt đẹp.",
+                "fit_tags": [
+                  "mountain",
+                  "relax",
+                  "weekend"
+                ],
+                "suggested_transport_mode": "bus"
+              },
+              {
+                "destination": "Hạ Long",
+                "reason": "Du ngoạn Vịnh Hạ Long mùa hè là lựa chọn tuyệt vời để thưởng thức cảnh biển đẹp và tham gia các hoạt động thể thao nước.",
+                "fit_tags": [
+                  "beach",
+                  "relax",
+                  "weekend"
+                ],
+                "suggested_transport_mode": "car"
+              },
+              {
+                "destination": "Ninh Bình",
+                "reason": "Ninh Bình nổi tiếng với phong cảnh thiên nhiên đẹp mắt, phù hợp cho chuyến đi khám phá và thư giãn vào mùa hè.",
+                "fit_tags": [
+                  "relax",
+                  "nearby",
+                  "weekend"
+                ],
+                "suggested_transport_mode": "car"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "7e18cc64-3f5c-4648-b228-99d56f3adcf2",
+      "title": "Tôi đang muốn lên núi cho mát mẻ, gợi ý giúp tôi...",
+      "created_at": "2026-06-01T17:03:34",
+      "updated_at": "2026-06-01T17:06:16",
+      "messages": [
+        {
+          "timestamp": "2026-06-01T17:04:13",
+          "role": "user",
+          "content": "Tôi đang muốn lên núi cho mát mẻ, gợi ý giúp tôi nên du lịch ở đâu"
+        },
+        {
+          "timestamp": "2026-06-01T17:04:17",
+          "role": "assistant",
+          "content": "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn",
+          "metadata": {
+            "standalone_request": "Tôi đang muốn lên núi cho mát mẻ, gợi ý giúp tôi nên du lịch ở đâu",
+            "params": {
+              "destination": null,
+              "destination_candidates": [
+                "Sapa",
+                "Đà Lạt",
+                "Hà Giang"
+              ],
+              "origin": null,
+              "origin_missing": true,
+              "days": 3,
+              "budget_vnd": null,
+              "departure_date": null,
+              "return_date": null,
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "mountain",
+              "constraints": [
+                "mát mẻ"
+              ]
+            },
+            "needs_origin": true
+          }
+        },
+        {
+          "timestamp": "2026-06-01T17:04:28",
+          "role": "user",
+          "content": "Tôi xuất phát từ Hà Nội"
+        },
+        {
+          "timestamp": "2026-06-01T17:06:16",
+          "role": "assistant",
+          "content": "### Tóm tắt yêu cầu\nBạn đang tìm kiếm một điểm đến mát mẻ trên núi cho chuyến đi 3 ngày từ Hà Nội. Các ứng viên có thể bao gồm Sapa, Đà Lạt, và Mai Châu.\n\n### Bảng so sánh phương án\n\n| Địa điểm  | Thời tiết | Điểm tham quan | Lựa chọn lưu trú | Ước tính chi phí di chuyển từ Hà Nội |\n|-----------|-----------|----------------|------------------|--------------------------------------|\n| Sapa      | Không có dữ liệu thời tiết | Kalatepe (archaeological_site) | Không tìm thấy | 1.200.000 VND - 2.600.000 VND       |\n| Đà Lạt    | 18.4°C - 26.4°C, mưa lớn | Không có dữ liệu | Du Lịch Công Đoàn, Sammy, Binh Yen | 1.200.000 VND - 2.600.000 VND       |\n| Mai Châu  | 20.8°C - 32.7°C, mưa vừa | Suối cá Bản Bướt, Suối nước nóng Bò Ấm, Go Lao waterfall, Lake viewpoint | Nhà nghỉ - Quán ăn, Avana retreat | 1.200.000 VND - 2.600.000 VND       |\n\n### Chi tiết từng phương án\n\n#### Phương án 1: Sapa\n- **Thời tiết**: Không có thông tin do giới hạn dữ liệu.\n- **Điểm tham quan**: Có thể ghé thăm Kalatepe, một khu di chỉ khảo cổ.\n- **Lưu trú**: Không tìm thấy thông tin lưu trú chi tiết, cần tìm thêm trên các nền tảng đặt phòng trực tuyến.\n- **Ước tính chi phí di chuyển**: Từ 1.200.000 VND - 2.600.000 VND.\n\n#### Lịch trình gợi ý:\n- **Ngày 1**: Khởi hành từ Hà Nội đến Sapa. Dạo quanh và khám phá Kalatepe.\n- **Ngày 2**: Tự do khám phá, tham gia các hoạt động leo núi, nghỉ ngơi tại chỗ lưu trú.\n- **Ngày 3**: Thăm các cảnh đẹp khác quanh Sapa trước khi trở về.\n\n#### Phương án 2: Đà Lạt\n- **Thời tiết**: 18.4°C - 26.4°C, khả năng mưa cao.\n- **Điểm tham quan**: Không có thông tin do giới hạn dữ liệu.\n- **Lưu trú**: Có các lựa chọn như Du Lịch Công Đoàn, Sammy, Binh Yen.\n- **Ước tính chi phí di chuyển**: Từ 1.200.000 VND - 2.600.000 VND.\n\n#### Lịch trình gợi ý:\n- **Ngày 1**: Bay từ Hà Nội đến Đà Lạt, nhận phòng và nghỉ ngơi.\n- **Ngày 2**: Tham quan các khu trung tâm Đà Lạt và thưởng thức món ăn địa phương.\n- **Ngày 3**: Khám phá các điểm xung quanh trước khi bay về.\n\n#### Phương án 3: Mai Châu\n- **Thời tiết**: 20.8°C - 32.7°C, mưa vừa.\n- **Điểm tham quan**: Thưởng thức phong cảnh Suối cá Bản Bướt, Suối nước nóng Bò Ấm, và các điểm nhìn tuyệt đẹp khác.\n- **Lưu trú**: Có thể ở tại Nhà nghỉ - Quán ăn hoặc Avana retreat.\n- **Ước tính chi phí di chuyển**: Từ 1.200.000 VND - 2.600.000 VND.\n\n#### Lịch trình gợi ý:\n- **Ngày 1**: Khởi hành từ Hà Nội đến Mai Châu. Khám phá Suối cá Bản Bướt.\n- **Ngày 2**: Tham quan Suối nước nóng Bò Ấm, nghỉ ngơi tại cơ sở lưu trú.\n- **Ngày 3**: Tận hưởng cảnh quan ở Go Lao waterfall trước khi trở lại Hà Nội.\n\n### Ước tính ngân sách\nChưa có thông tin chi tiết về chi phí lưu trú và ăn uống, chỉ tính riêng chi phí di chuyển từ Hà Nội.\n\n### Lưu ý\n- Thời tiết Đà Lạt mưa nhiều, nên chuẩn bị đồ chống nước.\n- Cần kiểm tra thêm về các lựa chọn lưu trú và nhà hàng trực tuyến.\n- Nếu không đi máy bay, cần tự xem xét thêm về cách di chuyển khác như ô tô, xe máy hoặc thuê xe.",
+          "metadata": {
+            "standalone_request": "Tôi muốn tìm một điểm đến trên núi để du lịch từ Hà Nội. Hãy gợi ý cho tôi những địa điểm mát mẻ thích hợp cho chuyến đi này.",
+            "params": {
+              "destination": null,
+              "destination_candidates": [
+                "Sapa",
+                "Đà Lạt",
+                "Mai Châu",
+                "Mộc Châu"
+              ],
+              "origin": "Hà Nội",
+              "origin_missing": false,
+              "days": 3,
+              "budget_vnd": null,
+              "departure_date": null,
+              "return_date": null,
+              "adults": 1,
+              "transport_mode": null,
+              "cuisine": null,
+              "theme": "mountain",
+              "constraints": [
+                "điểm đến mát mẻ"
+              ]
+            },
+            "destination_options": [
+              {
+                "destination": "Sapa",
+                "reason": "Địa điểm ứng viên được bóc tách từ yêu cầu.",
+                "fit_tags": [
+                  "mountain"
+                ]
+              },
+              {
+                "destination": "Đà Lạt",
+                "reason": "Địa điểm ứng viên được bóc tách từ yêu cầu.",
+                "fit_tags": [
+                  "mountain"
+                ]
+              },
+              {
+                "destination": "Mai Châu",
+                "reason": "Địa điểm ứng viên được bóc tách từ yêu cầu.",
+                "fit_tags": [
+                  "mountain"
+                ]
+              }
+            ]
+          }
         }
       ]
     }
-  }
-]
+  ]
+}

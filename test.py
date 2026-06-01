@@ -99,6 +99,62 @@ GENERIC_DESTINATION_WORDS = {
     "nghỉ dưỡng",
 }
 
+def check_intent(llm, user_request: str) -> bool:
+    system_prompt = """Bạn là một bộ phân loại intent đơn giản để xác định xem yêu cầu của người dùng có phải là về lập kế hoạch du lịch hay không. Trả về "true" nếu có, "false" nếu không, không giải thích gì thêm."""
+    response = llm.generate(user_request, system_prompt=system_prompt)
+    content = str(response.get("content", "")).strip().lower()
+    return content == "true"    
+
+def check_intent(llm, user_request: str) -> str:
+    """
+    Chỉ kiểm tra xem người dùng đã cung cấp địa điểm xuất phát chưa.
+
+    Return:
+    - "Có"
+    - "Không"
+    """
+
+    system_prompt = """
+Bạn là bộ kiểm tra thông tin đầu vào cho chatbot du lịch.
+
+Nhiệm vụ DUY NHẤT:
+Kiểm tra xem câu hỏi của người dùng đã cung cấp ĐỊA ĐIỂM XUẤT PHÁT hay chưa.
+
+Địa điểm xuất phát là nơi người dùng bắt đầu chuyến đi.
+
+Ví dụ CÓ địa điểm xuất phát:
+- "Tôi muốn đi Đà Nẵng, xuất phát từ Hà Nội"
+- "Đi từ TP.HCM đến Đà Lạt"
+- "Mình ở Cần Thơ, muốn đi Phú Quốc"
+- "Khởi hành tại Hải Phòng"
+- "From Hanoi to Da Nang"
+
+Ví dụ KHÔNG có địa điểm xuất phát:
+- "Tôi muốn đi Đà Nẵng 3 ngày"
+- "Gợi ý địa điểm biển đẹp"
+- "Lên plan đi Đà Lạt cuối tuần"
+- "Nên đi đâu với ngân sách 5 triệu?"
+
+Trả về DUY NHẤT một JSON object hợp lệ, không markdown, không giải thích.
+
+Schema:
+{
+  "has_origin": true hoặc false
+}
+""".strip()
+
+    response = llm.generate(
+        f"Yêu cầu: {user_request}",
+        system_prompt=system_prompt,
+    )
+
+    content = str(response.get("content", "")).strip()
+
+    try:
+        data = _parse_json_object(content)
+        return "Có" if data.get("has_origin") is True else "Không"
+    except Exception:
+        return "Không"
 
 def intent_agent(llm, user_request: str) -> dict:
     system_prompt = """
@@ -431,8 +487,8 @@ Quy tắc:
 - Nếu dữ liệu thiếu/ước tính, nói rõ giới hạn.
 - Mỗi phương án phải gắn với một địa điểm cụ thể và dữ liệu riêng của địa điểm đó.
 - Nếu có nhiều địa điểm, hãy xếp hạng hoặc so sánh ngắn theo mức phù hợp với yêu cầu.
-- Trả lời có cấu trúc: Tóm tắt yêu cầu, Bảng so sánh phương án, Chi tiết từng phương án, Lịch trình gợi ý, Ước tính ngân sách, Lưu ý.
-- Với ngân sách, nêu mức còn lại sau chi phí di chuyển nếu có.
+- Trả lời có cấu trúc: Tóm tắt yêu cầu, Bảng so sánh phương án, Chi tiết từng phương án (mỗi phương án ứng với một địa điểm, bao gồm lịch trình gợi ý và các thông tin liên quan), Lịch trình gợi ý, Ước tính ngân sách, Lưu ý.
+- Với ngân sách, nêu mức còn lại sau chi phí di chuyển nếu có (làm tròn chi phí một cách tự nhiên, ví dụ ~10 triệu đồng, ...).
 - Nếu không có dữ liệu transport vì user chưa nêu điểm xuất phát, ghi rõ "chưa ước tính vì thiếu điểm xuất phát"; không tự đoán phương tiện hay chi phí.
 - Nếu transport là null ở một phương án, tuyệt đối không viết "ô tô", "máy bay", "xe khách" hoặc khoảng giá di chuyển cho phương án đó.
 - Gợi ý thực tế, ngắn gọn, dễ làm theo.
@@ -461,6 +517,13 @@ def main() -> int:
 
     try:
         llm = create_llm_provider()
+
+        intent = check_intent(llm, user_request)
+        if intent == "Không":
+            answer ="Hãy cho tôi biết thêm thông tin về địa điểm xuất phát của bạn để tôi có thể gợi ý lịch trình phù hợp nhất"
+            print(answer)
+            return 0
+        
         print("\nĐang bóc tách yêu cầu...", flush=True)
         params = normalize_trip_params(intent_agent(llm, user_request))
 
@@ -500,5 +563,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     raise SystemExit(main())
