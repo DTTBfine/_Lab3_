@@ -22,7 +22,13 @@ class PerformanceTracker:
     """
     Tracking industry-standard metrics for LLMs.
     Collects per-request data and provides session-level aggregations.
+    
+    Tracking industry-standard metrics for LLMs and API tools.
     """
+    def __init__(self):
+        self.session_metrics = []
+        self.api_tool_metrics = []
+        self.validation_metrics = []
 
     def __init__(self) -> None:
         self.session_metrics: List[Dict[str, Any]] = []
@@ -38,18 +44,6 @@ class PerformanceTracker:
         """Records one LLM call to the session and emits a telemetry event."""
         cost = self._calculate_cost(model, usage)
         metric: Dict[str, Any] = {
-    Tracking industry-standard metrics for LLMs and API tools.
-    """
-    def __init__(self):
-        self.session_metrics = []
-        self.api_tool_metrics = []
-        self.validation_metrics = []
-
-    def track_request(self, provider: str, model: str, usage: Dict[str, int], latency_ms: int):
-        """
-        Logs a single request metric to our telemetry.
-        """
-        metric = {
             "provider": provider,
             "model": model,
             "agent": agent_name,
