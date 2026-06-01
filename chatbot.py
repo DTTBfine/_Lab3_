@@ -1,7 +1,10 @@
 import json
 import os
+import time
 from datetime import datetime
 
+from prompts import REWRITE_REQUEST_PROMPT
+from src.telemetry.logger import logger
 from test import (
     collect_research_for_destinations,
     create_llm_provider,
@@ -15,6 +18,7 @@ from test import (
 
 HISTORY_PATH = "history.json"
 MAX_HISTORY_MESSAGES = 8
+MAX_INPUT_LENGTH = 2000
 
 
 def load_history() -> list:
@@ -61,21 +65,22 @@ def recent_dialogue(history: list) -> list:
     return compact
 
 
+def validate_user_input(user_input: str) -> str:
+    """Sanitize and enforce guardrails on raw user input. Raises ValueError on violations."""
+    stripped = user_input.strip()
+    if not stripped:
+        raise ValueError("Yêu cầu không được để trống.")
+    if len(stripped) > MAX_INPUT_LENGTH:
+        raise ValueError(
+            f"Yêu cầu quá dài ({len(stripped)} ký tự). Tối đa {MAX_INPUT_LENGTH} ký tự."
+        )
+    return stripped
+
+
 def rewrite_user_request(llm, history: list, user_input: str) -> str:
     if not history:
         return user_input
 
-    system_prompt = """
-Bạn là bộ chuẩn hóa hội thoại cho travel planner.
-Nhiệm vụ: dựa trên lịch sử hội thoại và tin nhắn mới nhất, viết lại thành một yêu cầu du lịch đầy đủ, độc lập.
-
-Quy tắc:
-- Giữ nguyên các thông tin quan trọng đã có: điểm đến/chủ đề, điểm xuất phát, số ngày, ngân sách, ngày đi, sở thích.
-- Nếu user chỉ bổ sung một thông tin như "từ Hà Nội", hãy ghép nó vào yêu cầu du lịch trước đó.
-- Nếu assistant vừa hỏi điểm xuất phát và user trả lời địa điểm xuất phát, hãy ghép địa điểm đó vào yêu cầu du lịch gần nhất.
-- Không bịa thông tin chưa có.
-- Trả về DUY NHẤT nội dung yêu cầu đã viết lại, không markdown, không giải thích.
-""".strip()
     prompt = json.dumps(
         {
             "recent_dialogue": recent_dialogue(history),
@@ -84,32 +89,46 @@ Quy tắc:
         ensure_ascii=False,
         indent=2,
     )
-    response = llm.generate(prompt, system_prompt=system_prompt)
+    response = llm.generate(prompt, system_prompt=REWRITE_REQUEST_PROMPT)
     rewritten = str(response.get("content", "")).strip()
     return rewritten or user_input
 
 
 def run_planner_turn(llm, standalone_request: str) -> tuple:
+    timings: dict = {}
+
+    t0 = time.perf_counter()
     params = normalize_trip_params(intent_agent(llm, standalone_request))
+    timings["intent_s"] = round(time.perf_counter() - t0, 2)
+
     if params.get("origin_missing"):
         answer = "Hãy cung cấp cho tôi thêm thông tin về địa điểm xuất phát của bạn"
         metadata = {
             "standalone_request": standalone_request,
             "params": params,
             "needs_origin": True,
+            "timings": timings,
         }
         return answer, metadata
 
+    t0 = time.perf_counter()
     destination_options = destination_agent(llm, standalone_request, params)
+    timings["destination_s"] = round(time.perf_counter() - t0, 2)
+
     if not destination_options:
         raise ValueError("Không tìm được địa điểm ứng viên phù hợp.")
 
     max_options = int(os.getenv("MAX_DESTINATION_OPTIONS", "3"))
     destination_options = destination_options[:max_options]
+
+    t0 = time.perf_counter()
     destination_research = collect_research_for_destinations(
         params,
         destination_options,
     )
+    timings["research_s"] = round(time.perf_counter() - t0, 2)
+
+    t0 = time.perf_counter()
     answer = planning_agent(
         llm,
         standalone_request,
@@ -117,10 +136,16 @@ def run_planner_turn(llm, standalone_request: str) -> tuple:
         destination_options,
         destination_research,
     )
+    timings["planning_s"] = round(time.perf_counter() - t0, 2)
+
+    from src.telemetry.metrics import tracker
+
     metadata = {
         "standalone_request": standalone_request,
         "params": params,
         "destination_options": destination_options,
+        "timings": timings,
+        "perf_stats": tracker.get_summary_stats(),
     }
     return answer, metadata
 
@@ -151,6 +176,12 @@ def main() -> int:
             print("Tạm biệt.")
             return 0
 
+        try:
+            user_input = validate_user_input(user_input)
+        except ValueError as validation_error:
+            print(f"[Guardrail] {validation_error}")
+            continue
+
         append_history(history, "user", user_input)
 
         try:
@@ -162,6 +193,7 @@ def main() -> int:
             print("Đang xử lý yêu cầu:", standalone_request)
             answer, metadata = run_planner_turn(llm, standalone_request)
         except Exception as error:
+            logger.log_event("PIPELINE_ERROR", {"input": user_input, "error": str(error)})
             answer = f"Mình chưa xử lý được lượt này: {error}"
             metadata = None
 

@@ -2,6 +2,7 @@ import json
 import os
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
 try:
@@ -9,6 +10,13 @@ try:
 except ImportError:  # pragma: no cover - fallback for minimal lab environments.
     load_dotenv = None
 
+from prompts import (
+    DESTINATION_AGENT_PROMPT,
+    INTENT_AGENT_PROMPT,
+    PLANNING_AGENT_PROMPT,
+)
+from src.telemetry.logger import logger
+from src.telemetry.metrics import tracker
 from src.tools.travel_api_tools import (
     estimate_transport_cost,
     get_weather,
@@ -101,39 +109,22 @@ GENERIC_DESTINATION_WORDS = {
 
 
 def intent_agent(llm, user_request: str) -> dict:
-    system_prompt = """
-Bạn là bộ bóc tách yêu cầu du lịch.
-Trả về DUY NHẤT một JSON object hợp lệ, không markdown, không giải thích.
-
-Schema:
-{
-  "destination": "địa điểm đến cụ thể hoặc null nếu người dùng chỉ nói chung chung như đi biển/đi núi",
-  "destination_candidates": ["các địa điểm cụ thể người dùng đã nêu hoặc bạn suy ra trực tiếp, có thể rỗng"],
-  "origin": "điểm xuất phát hoặc null",
-  "days": số ngày hoặc null,
-  "budget_vnd": ngân sách VND hoặc null,
-  "departure_date": "YYYY-MM-DD hoặc null",
-  "return_date": "YYYY-MM-DD hoặc null",
-  "adults": số người lớn, mặc định 1,
-  "transport_mode": "flight|bus|train|car|null",
-  "cuisine": "loại món/quán muốn tìm hoặc null",
-  "theme": "beach|mountain|culture|food|relax|adventure|family|general",
-  "constraints": ["ràng buộc/sở thích quan trọng từ yêu cầu"]
-}
-
-Quy đổi ngân sách tiếng Việt, ví dụ "5 triệu" thành 5000000.
-Nếu người dùng nói "cuối tuần tới", hãy suy ra thứ 7 và chủ nhật gần nhất sau ngày hiện tại.
-Nếu không chắc địa điểm cụ thể, để destination là null và ghi theme/constraints.
-""".strip()
-
     response = llm.generate(
         f"Ngày hiện tại: {date.today().isoformat()}\nYêu cầu: {user_request}",
-        system_prompt=system_prompt,
+        system_prompt=INTENT_AGENT_PROMPT,
+    )
+    tracker.track_request(
+        provider=response.get("provider", getattr(llm, "provider_name", "unknown")),
+        model=getattr(llm, "model_name", "unknown"),
+        usage=response.get("usage", {}),
+        latency_ms=response.get("latency_ms", 0),
+        agent_name="intent_agent",
     )
     content = str(response.get("content", "")).strip()
     try:
         return _parse_json_object(content)
     except ValueError:
+        logger.log_event("PIPELINE_PARSE_ERROR", {"agent": "intent_agent", "raw": content[:500]})
         return _fallback_extract(user_request)
 
 
@@ -283,23 +274,6 @@ def destination_agent(llm, user_request: str, params: dict) -> list:
             for destination in params["destination_candidates"][:4]
         ]
 
-    system_prompt = """
-Bạn là Destination Agent cho hệ thống lập kế hoạch du lịch Việt Nam.
-Từ yêu cầu chung chung của user, hãy đề xuất 3-4 địa điểm cụ thể phù hợp.
-Trả về DUY NHẤT JSON array hợp lệ, không markdown.
-
-Mỗi item:
-{
-  "destination": "tên địa điểm cụ thể",
-  "reason": "vì sao phù hợp với yêu cầu",
-  "fit_tags": ["beach|mountain|food|relax|nearby|budget|weekend"],
-  "suggested_transport_mode": "flight|bus|train|car|null"
-}
-
-Ưu tiên địa điểm ở Việt Nam, phù hợp số ngày/ngân sách/đi cuối tuần.
-Không trả địa điểm chung chung như "đi biển"; phải là nơi cụ thể như "Đà Nẵng".
-Nếu người dùng không nêu điểm xuất phát, để suggested_transport_mode là null và không ưu tiên theo tiêu chí "gần".
-""".strip()
     prompt = json.dumps(
         {
             "today": date.today().isoformat(),
@@ -309,11 +283,19 @@ Nếu người dùng không nêu điểm xuất phát, để suggested_transport
         ensure_ascii=False,
         indent=2,
     )
-    response = llm.generate(prompt, system_prompt=system_prompt)
+    response = llm.generate(prompt, system_prompt=DESTINATION_AGENT_PROMPT)
+    tracker.track_request(
+        provider=response.get("provider", getattr(llm, "provider_name", "unknown")),
+        model=getattr(llm, "model_name", "unknown"),
+        usage=response.get("usage", {}),
+        latency_ms=response.get("latency_ms", 0),
+        agent_name="destination_agent",
+    )
     content = str(response.get("content", "")).strip()
     try:
         candidates = _parse_json_array(content)
     except ValueError:
+        logger.log_event("PIPELINE_PARSE_ERROR", {"agent": "destination_agent", "raw": content[:500]})
         candidates = _fallback_destination_candidates(params)
 
     normalized = []
@@ -378,41 +360,49 @@ def research_agent(destination_option: dict, params: dict) -> dict:
         or "flight"
     )
 
-    research = {
-        "destination_option": destination_option,
-        "weather": get_weather(destination, forecast_days=min(days, 7)),
-        "attractions": search_attractions(
+    with ThreadPoolExecutor() as executor:
+        future_weather = executor.submit(get_weather, destination, min(days, 7))
+        future_attractions = executor.submit(
+            search_attractions, destination, 10000, min(6, max(3, days * 2))
+        )
+        future_stays = executor.submit(search_stays, destination, 5000, 4)
+        future_restaurants = executor.submit(
+            search_restaurants,
             destination,
-            radius=10000,
-            limit=min(6, max(3, days * 2)),
-        ),
-        "stays": search_stays(destination, radius=5000, limit=4),
-        "restaurants": search_restaurants(
-            destination,
-            cuisine=params.get("cuisine"),
-            radius=5000,
-            limit=min(5, max(3, days * 2)),
-        ),
-        "transport": None,
-    }
-
-    if params.get("origin"):
-        research["transport"] = estimate_transport_cost(
-            origin=params["origin"],
-            destination=destination,
-            mode=transport_mode,
-            departure_date=params.get("departure_date"),
-            passengers=params["adults"],
+            params.get("cuisine"),
+            5000,
+            min(5, max(3, days * 2)),
+        )
+        future_transport = (
+            executor.submit(
+                estimate_transport_cost,
+                origin=params["origin"],
+                destination=destination,
+                mode=transport_mode,
+                departure_date=params.get("departure_date"),
+                passengers=params["adults"],
+            )
+            if params.get("origin")
+            else None
         )
 
-    return research
+        return {
+            "destination_option": destination_option,
+            "weather": future_weather.result(),
+            "attractions": future_attractions.result(),
+            "stays": future_stays.result(),
+            "restaurants": future_restaurants.result(),
+            "transport": future_transport.result() if future_transport else None,
+        }
 
 
 def collect_research_for_destinations(params: dict, destination_options: list) -> list:
-    return [
-        research_agent(destination_option, params)
-        for destination_option in destination_options
-    ]
+    with ThreadPoolExecutor() as executor:
+        futures = [
+            executor.submit(research_agent, option, params)
+            for option in destination_options
+        ]
+        return [f.result() for f in futures]
 
 
 def planning_agent(
@@ -422,22 +412,6 @@ def planning_agent(
     destination_options: list,
     destination_research: list,
 ) -> str:
-    system_prompt = """
-Bạn là Travel Planner Agent.
-Nhiệm vụ: so sánh nhiều địa điểm và tổng hợp dữ liệu tool thành 1 hoặc nhiều phương án du lịch khả thi, có cấu trúc, bằng tiếng Việt.
-
-Quy tắc:
-- Chỉ dùng dữ liệu có trong tool observations, không bịa giá, tên khách sạn, nhà hàng hoặc thời tiết.
-- Nếu dữ liệu thiếu/ước tính, nói rõ giới hạn.
-- Mỗi phương án phải gắn với một địa điểm cụ thể và dữ liệu riêng của địa điểm đó.
-- Nếu có nhiều địa điểm, hãy xếp hạng hoặc so sánh ngắn theo mức phù hợp với yêu cầu.
-- Trả lời có cấu trúc: Tóm tắt yêu cầu, Bảng so sánh phương án, Chi tiết từng phương án, Lịch trình gợi ý, Ước tính ngân sách, Lưu ý.
-- Với ngân sách, nêu mức còn lại sau chi phí di chuyển nếu có.
-- Nếu không có dữ liệu transport vì user chưa nêu điểm xuất phát, ghi rõ "chưa ước tính vì thiếu điểm xuất phát"; không tự đoán phương tiện hay chi phí.
-- Nếu transport là null ở một phương án, tuyệt đối không viết "ô tô", "máy bay", "xe khách" hoặc khoảng giá di chuyển cho phương án đó.
-- Gợi ý thực tế, ngắn gọn, dễ làm theo.
-""".strip()
-
     prompt = json.dumps(
         {
             "user_request": user_request,
@@ -448,7 +422,14 @@ Quy tắc:
         ensure_ascii=False,
         indent=2,
     )
-    response = llm.generate(prompt, system_prompt=system_prompt)
+    response = llm.generate(prompt, system_prompt=PLANNING_AGENT_PROMPT)
+    tracker.track_request(
+        provider=response.get("provider", getattr(llm, "provider_name", "unknown")),
+        model=getattr(llm, "model_name", "unknown"),
+        usage=response.get("usage", {}),
+        latency_ms=response.get("latency_ms", 0),
+        agent_name="planning_agent",
+    )
     return str(response.get("content", "")).strip()
 
 

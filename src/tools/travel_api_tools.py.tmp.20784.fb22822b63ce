@@ -407,10 +407,11 @@ def search_restaurants(
     if cuisine:
         cuisine_filter = f'["cuisine"~"{cuisine}",i]'
 
-    _food_types = "restaurant|cafe|fast_food|food_court|bar|pub|biergarten|ice_cream|bakery"
     filters = [
-        f'node(around:{{radius}},{{lat}},{{lon}})["amenity"~"{_food_types}"]{cuisine_filter};',
-        f'way(around:{{radius}},{{lat}},{{lon}})["amenity"~"{_food_types}"]{cuisine_filter};',
+        'node(around:{radius},{lat},{lon})["amenity"~"restaurant|cafe|fast_food|food_court"]'
+        f"{cuisine_filter};",
+        'way(around:{radius},{lat},{lon})["amenity"~"restaurant|cafe|fast_food|food_court"]'
+        f"{cuisine_filter};",
     ]
     result = _overpass_search(location, radius_value, limit, filters, "search_restaurants")
     if result.get("status") == "ok":
